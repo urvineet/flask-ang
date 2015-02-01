@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+
+
+    <style>
+        .table {
+        top:20%;
+        width: 30%;
+        max-width: 30%;
+
+        position: absolute;
+        left: 10%;
+        border:solid 2px gray;
+        }
+
+
+
+    </style>
+</head>
+
+<body ng-app="myapp">
+
+<div ng-controller="MyController">
+
+</div>
+
+<script>
+    var app = angular.module("myapp", [])
+        app.controller("MyController", function($scope, $http) {
+            $scope.myData = {};
+            $scope.create = function(item, event) {
+
+                var responsePromise = $http.get("/v1/user");
+
+                responsePromise.success(function(data, status, headers, config) {
+                	if (data.status === "SUCCESS"){
+                    $scope.myData = data.data;
+                }
+                });
+                responsePromise.error(function(data, status, headers, config) {
+                    alert("AJAX failed!");
+                });
+            }
+
+
+        } );
+
+
+        app.controller('ExampleController', ['$scope', function($scope) {
+       $scope.user = {name: 'username'};
+     }]);
+
+
+
+</script>
+
+
+<div ng-app="" ng-controller="userlistController">
+
+    <!--<ul>-->
+
+    <!--<h1> User List </h1>-->
+    <!--<li ng-repeat="name in names">-->
+    <!--{{ name }}-->
+    <!--</li>-->
+    <!--</ul>-->
+    <h2 style="margin-left: 50%;"> Contact List </h2>
+    <table class="table table-striped">
+        <td align="center"><h2> Existing User List </h2></td>
+        <tbody>
+        <tr ng:repeat="i in names">
+            <td align="center"><a href="/{{i}}">{{i}}</a></td>
+        </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
+
+
+<script>
+function userlistController($scope,$http,$location) {
+          var responsePromise = $http.get("/v1/user");
+
+                responsePromise.success(function(data, status, headers, config) {
+                	if (data.status === "SUCCESS"){
+                    $scope.names = data.data.user_list;
+                    var absUrl = $location.absUrl();
+                    console.log(absUrl)
+                }
+                });
+                responsePromise.error(function(data, status, headers, config) {
+                    alert("AJAX failed!");
+                });
+            };
+
+
+
+</script>
+
+
+<div id='dv1'>
+    <form ng-controller="FrmController" style=" position: fixed; left: 50%; top: 20%; padding: 5%; background: rgb(242, 242, 242); ">
+
+        <h2>Create New User</h2>
+
+        <div>
+            <label>Name</label>
+            <input type="text" ng-model="username" placeholder="User Name" style='margin-left: 22px;'>
+        </div>
+
+        <button ng-click='CreateUser();' class="btn" style="margin-top: 20px; left: 20px;aline:center;margin-left: 40%;"  >Create</button>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+            function FrmController($scope, $http) {
+                $scope.errors = [];
+                $scope.msgs = [];
+ 
+                $scope.CreateUser = function() {
+ 
+                    $scope.errors.splice(0, $scope.errors.length); // remove all error messages
+                    $scope.msgs.splice(0, $scope.msgs.length);
+ 
+                    $http.post("/v1/user", {'user_name': $scope.username}
+                    ).success(function(data, status, headers, config) {
+                        if (data.status === 'SUCCESS')
+                        {
+                            $scope.names+=[$scope.username];
+                             console.log($scope.username);
+                             alert("Created New User "+$scope.username+" Refresh the page for new updates" );
+                             location.reload();
+
+
+                        }
+                        else
+                        {
+                            $scope.errors.push(data.error);
+                        }
+                    }).error(function(data, status) { // called asynchronously if an error occurs
+// or server returns response with an error status.
+                        $scope.errors.push(status);
+                    });
+                }
+            }
+
+
+
+</script>
+
+
+</body>
+
+</html>
