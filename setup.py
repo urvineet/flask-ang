@@ -77,7 +77,7 @@ class setup():
         try:
             self.copy_to_remote('/angular-flask-sqlalchemy', '/tmp')
             print self.run_sudo_command(
-                ' pip install -r /tmp/angular-flask-sqlalchemy/requirement.txt')
+                ' pip install -r /tmp/angular-flask-sqlalchemy/requirement.txt ; sudo apt-get install sqlite3 ;')
 
             print self.run_command(' mv /tmp/angular-flask-sqlalchemy/ . ')
 
