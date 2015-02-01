@@ -93,12 +93,18 @@ class setup():
 
 
 if __name__ == "__main__":
-    ip, user, pem = sys.argv[1:]
-    if os.path.isfile(pem):
-        print "File exist {0}".format(str(pem))
-        setup(ip, user, pem).run()
+    if len(sys.argv[1:]) >= 3 :
+        ip, user, pem = sys.argv[1:]
+
+        if os.path.isfile(pem):
+            print "File exist {0}".format(str(pem))
+            setup(ip, user, pem).run()
+        else:
+            print "File not exist {0}".format(str(pem))
     else:
-        print "File not exist {0}".format(str(pem))
+         print  "Some Argument missing "
+         print "Run below command with respected information"
+         print  "python setup.py <ec2 ip/url/dns> <user-name> <pem key>"
 
 
 
